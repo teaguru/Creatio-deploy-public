@@ -2,51 +2,51 @@ import zipfile
 import os.path
 import os
 import lxml.etree as ET
-def inputpath():
-		print('Enter path to the zip:')
-		zippath = input()
-		print(zippath)
-		print(os.path.isfile(zippath))
-		return(zippath)
+# def inputpath():
+# 		print('Enter path to the zip:')
+# 		zippath = input()
+# 		print(zippath)
+# 		print(os.path.isfile(zippath))
+# 		return(zippath)
 
-def inputexportpath():
-	print('Input export path')
-	export_path=input()
-	if os.path.exists(export_path):
-		print(export_path)
-		return(export_path)
-	else:
-		print('directory not exist, make it?(y/n)')
-		answ = input()
-		if (answ == 'y'):
-			try:
-				os.makedirs(export_path)
-			except OSError:
-				print ("Создать директорию %s не удалось" % export_path)
-			else:
-				print ("Успешно создана директория %s" % export_path)
-				return(export_path)
-		else:
-			print('ssuka')
+# def inputexportpath():
+# 	print('Input export path')
+# 	export_path=input()
+# 	if os.path.exists(export_path):
+# 		print(export_path)
+# 		return(export_path)
+# 	else:
+# 		print('directory not exist, make it?(y/n)')
+# 		answ = input()
+# 		if (answ == 'y'):
+# 			try:
+# 				os.makedirs(export_path)
+# 			except OSError:
+# 				print ("Создать директорию %s не удалось" % export_path)
+# 			else:
+# 				print ("Успешно создана директория %s" % export_path)
+# 				return(export_path)
+# 		else:
+# 			print('ERROR')
 	
 
 
-zippath = inputpath()
-exp_path = inputexportpath()
 
 
 
-def export(zippath,exp_path):
-	try:
-		fantasy_zip = zipfile.ZipFile(zippath)
-		fantasy_zip.extractall(exp_path)
-		fantasy_zip.close()
-	except OsError:
-		print ("extraction %s not sucessfull" % exp_path)
-	else:
-		print ("sucessfull %s" % exp_path)
 
-export(zippath,exp_path)
+
+# def export(zippath,exp_path):
+# 	try:
+# 		fantasy_zip = zipfile.ZipFile(zippath)
+# 		fantasy_zip.extractall(exp_path)
+# 		fantasy_zip.close()
+# 	except OsError:
+# 		print ("extraction %s not sucessfull" % exp_path)
+# 	else:
+# 		print ("sucessfull %s" % exp_path)
+
+# export(zippath,exp_path)
 
 # def read_connection(exp_path):
 # 	string_path = exp_path + '\\' + 'ConnectionStrings.config'
@@ -74,7 +74,7 @@ def input_redis():
 		else:
 			print("wrong format,not a number")			
 
-redis_port = input_redis()
+
 
 def input_subd():
 	print('select database postgres[1] or mssql [2]')
@@ -107,7 +107,7 @@ def input_subd():
 			flag_subd = True
 		else:
 			print(" choose 1 or 2")	
-subd = input_subd()
+
 
 def input_db():
 	print('write dbname')
@@ -123,9 +123,9 @@ def input_db():
 	
 	return(db)			
 
-db = input_db()
 
-print(db)
+
+
 def read_connection(db,subd,redis_port,exp_path):
 	print(db['name'], 'debug')
 	string_path = exp_path + '\\' + 'ConnectionStrings.config'
@@ -158,4 +158,12 @@ def read_connection(db,subd,redis_port,exp_path):
 				print('ddd')	
 	tree.write(string_path, xml_declaration=True, method='xml', encoding="utf8")
 
-read_connection(db,subd,redis_port,exp_path)
+if __name__ == '__main__':
+    
+    #zippath = inputpath()
+    exp_path = 'E:\\testapp'
+    subd = input_subd()
+    db = input_db()
+    redis_port = input_redis()
+    
+    read_connection(db,subd,redis_port,exp_path)
