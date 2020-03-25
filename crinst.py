@@ -28,11 +28,6 @@ import lxml.etree as ET
 # 				return(export_path)
 # 		else:
 # 			print('ERROR')
-	
-
-
-
-
 
 
 
@@ -60,110 +55,119 @@ import lxml.etree as ET
 #string_path = exp_path + '\\' + 'ConnectionStrings.config'
 
 def input_redis():
-	print('input redis port between 0 and 85')
-	flag = False
-	while flag == False:
-		port = input()
-		if port.isdigit():
-			port = int(port)
-			if (port > 0 and port < 85 ):
-				flag = True
-				return port
-			else:
-				print("wrong port format, must be between 0 and 85")
-		else:
-			print("wrong format,not a number")			
-
+    print('input redis port between 0 and 85')
+    flag = False
+    while flag == False:
+        port = input()
+        if port.isdigit():
+            port = int(port)
+            if (port > 0 and port < 85):
+                flag = True
+                return port
+            else:
+                print("wrong port format, must be between 0 and 85")
+        else:
+            print("wrong format,not a number")
 
 
 def input_subd():
-	print('select database postgres[1] or mssql [2]')
-	# here we make default names for mssqk server, change it for your company
-	defserv1 = "OWNEROR-774F19G"
-	defserv2 = "OWNEROR-774F19G\SSDSERV"
-	defserv3 = "116.202.197.223"
-	flag_subd = False
-	while flag_subd == False:
-		db_name = input()	
-		if int(db_name) == 1:
-			print("Postgres")
-			print("write postgres server adress, enter ip adress or server name. Also you can write 1 for the first default server{}".format(defserv3))
-			servadr = input()
-			if servadr == '1':
-				servadr = defserv3	
-			print("Ok it will be", servadr)
-			return("Postgres",servadr)
-			flag_subd = True
+    print('select database postgres[1] or mssql [2]')
+    # here we make default names for mssqk server, change it for your company
+    defserv1 = "OWNEROR-774F19G"
+    defserv2 = "OWNEROR-774F19G\SSDSERV"
+    defserv3 = "116.202.197.223"
+    flag_subd = False
+    while flag_subd == False:
+        db_name = input()
+        if int(db_name) == 1:
+            print("Postgres")
+            print("write postgres server adress, enter ip adress or server name. Also you can write 1 for the first default server{}".format(defserv3))
+            servadr = input()
+            if servadr == '1':
+                servadr = defserv3
+            print("Ok it will be", servadr)
+            return("Postgres", servadr)
+            flag_subd = True
 
-		if int(db_name) == 2:
-			print("write server adress, enter ip adress or server name. Also you can write 1 for the first default server{} or 2 for the second default server {}".format(defserv1,defserv2))
-			servadr = input()
-			if servadr == '1':
-				servadr = defserv1
-			if servadr == '2':
-				servadr = defserv2	
-			print("Ok it will be", servadr)
-			return("MSSQL",servadr)
-			flag_subd = True
-		else:
-			print(" choose 1 or 2")	
-
-
-def input_db():
-	print('write dbname')
-	db_name = input()
-	print("database is:",db_name)
-	print('input db user')
-	db_user = input()
-	print("user is:",db_user)
-	print('input db password')
-	db_psswd = input()
-	print('******')
-	db = {'name': db_name,'user': db_user,'password': db_psswd}
-	
-	return(db)			
+        if int(db_name) == 2:
+            print("write server adress, enter ip adress or server name. Also you can write 1 for the first default server{} or 2 for the second default server {}".format(defserv1, defserv2))
+            servadr = input()
+            if servadr == '1':
+                servadr = defserv1
+            if servadr == '2':
+                servadr = defserv2
+            print("Ok it will be", servadr)
+            return("MSSQL", servadr)
+            flag_subd = True
+        else:
+            print(" choose 1 or 2")
 
 
+def input_db(subd):
+    subd = subd
+    print('write dbname')
+    db_name = input()
+    print("database is:", db_name)
+    print(subd)
+    if subd[0] == 'MSSQL':
+        print('if you want to make SSPI connection for MSSQL database type "yes" or "y"')
+        sspi = input()
+        if (sspi == "yes") or (sspi == "y"):
+          db = {'name':sspi, 'user': sspi, 'password': sspi}
+          return(db)
+    print('input db user')
+    db_user = input()
+    print("user is:", db_user)
+    print('input db password')
+    db_psswd = input()
+    print('******')
+    db = {'name': db_name, 'user': db_user, 'password': db_psswd}
+    return(db)
 
 
-def read_connection(db,subd,redis_port,exp_path):
-	print(db['name'], 'debug')
-	string_path = exp_path + '\\' + 'ConnectionStrings.config'
-	with open(string_path, encoding='utf-8') as f:
-		tree = ET.parse(f)
-		
-		root = tree.getroot()
+def read_connection(db, subd, redis_port, exp_path):
+    print(db['name'], 'debug')
+    string_path = exp_path + '\\' + 'ConnectionStrings.config'
+    with open(string_path, encoding='utf-8') as f:
+        tree = ET.parse(f)
 
-		for elem in root.getiterator():
-			try:
-			
-				print(elem.attrib.get("name"))
-				server = subd[1]
-				if elem.attrib.get("name") == 'db':
-					if subd[0] == 'MSSQL':
-						sb_conn = "{}; Initial Catalog={}; Persist Security Info=True; MultipleActiveResultSets=True; user={}; password={}; Pooling = true; Max Pool Size = 100; Async = true; Connection Timeout=500".format(server,db['name'],db['user'],db['password'])
-					else:
-						sb_conn = "Server={};Port=5432;Database={};User ID={};password={};Timeout=500; CommandTimeout=400;MaxPoolSize=1024;".format(server,db['name'],db['user'],db['password'])
+        root = tree.getroot()
 
-					elem.attrib['connectionString'] = str(sb_conn)
-			except AttributeError:
-				print('error')
-			try:
-				print(elem.attrib.get("name"))
-				if elem.attrib.get("name") == 'redis':
-					print('ddd')
-					elem.attrib['connectionString'] = elem.attrib['connectionString'].replace("host=;","host=localhost;")
-					elem.attrib['connectionString'] = elem.attrib['connectionString'].replace("db=;","db={};".format(redis_port))
-			except AttributeError:
-				print('ddd')	
-	tree.write(string_path, xml_declaration=True, method='xml', encoding="utf8")
+        for elem in root.getiterator():
+            try:
+
+                print(elem.attrib.get("name"))
+                server = subd[1]
+                if elem.attrib.get("name") == 'db':
+                    if subd[0] == 'MSSQL':
+                        sb_conn = "{}; Initial Catalog={}; Persist Security Info=True; MultipleActiveResultSets=True; user={}; password={}; Pooling = true; Max Pool Size = 100; Async = true; Connection Timeout=500".format(
+                            server, db['name'], db['user'], db['password'])
+                    else:
+                        sb_conn = "Server={};Port=5432;Database={};User ID={};password={};Timeout=500; CommandTimeout=400;MaxPoolSize=1024;".format(
+                            server, db['name'], db['user'], db['password'])
+
+                    elem.attrib['connectionString'] = str(sb_conn)
+            except AttributeError:
+                print('error')
+            try:
+                print(elem.attrib.get("name"))
+                if elem.attrib.get("name") == 'redis':
+                    print('ddd')
+                    elem.attrib['connectionString'] = elem.attrib['connectionString'].replace(
+                        "host=;", "host=localhost;")
+                    elem.attrib['connectionString'] = elem.attrib['connectionString'].replace(
+                        "db=;", "db={};".format(redis_port))
+            except AttributeError:
+                print('ddd')
+    tree.write(string_path, xml_declaration=True,
+               method='xml', encoding="utf8")
+
 
 if __name__ == '__main__':
-    
     #zippath = inputpath()
     exp_path = 'E:\\testapp'
     subd = input_subd()
-    db = input_db()
+    db = input_db(subd)
     redis_port = input_redis()
-    
-    read_connection(db,subd,redis_port,exp_path)
+
+    read_connection(db, subd, redis_port, exp_path)
