@@ -110,10 +110,10 @@ def input_db(subd):
     print("database is:", db_name)
     print(subd)
     if subd[0] == 'MSSQL':
-        print('if you want to make SSPI connection for MSSQL database type "yes" or "y"')
-        sspi = input()
-        if (sspi == "yes") or (sspi == "y"):
-          db = {'name':sspi, 'user': sspi, 'password': sspi}
+        print('if you want to make Default connection for MSSQL database type "yes" or "y"')
+        defcon = input()
+        if (defcon == "yes") or (defcon == "y"):
+          db = {'name': 'dbtemp', 'user': 'user', 'password': 'password'}
           return(db)
     print('input db user')
     db_user = input()
@@ -159,8 +159,7 @@ def read_connection(db, subd, redis_port, exp_path):
                         "db=;", "db={};".format(redis_port))
             except AttributeError:
                 print('ddd')
-    tree.write(string_path, xml_declaration=True,
-               method='xml', encoding="utf8")
+    tree.write(string_path, xml_declaration=True, method='xml', encoding="utf8")
 
 
 if __name__ == '__main__':
@@ -169,5 +168,4 @@ if __name__ == '__main__':
     subd = input_subd()
     db = input_db(subd)
     redis_port = input_redis()
-
     read_connection(db, subd, redis_port, exp_path)
