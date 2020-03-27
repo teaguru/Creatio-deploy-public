@@ -4,8 +4,8 @@ def conndb():
   con = psycopg2.connect(
     database="postgres", 
     user="postgres", 
-    password="123654-pP", 
-    host="116.202.197.223", 
+    password="xxx", 
+    host="116.202.197.xxx", 
     port="5432"
   )
   print(con,"555")
